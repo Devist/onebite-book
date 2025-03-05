@@ -1,10 +1,31 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import style from "./[id].module.css";
 import fetchOneBook from "@/lib/fetch-one-books";
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
+/**
+ *
+ *
+ *
+ */
+
+export const getStaticPaths = () => {
+  return {
+    paths: [
+      { params: { id: "1" } },
+      { params: { id: "2" } },
+      { params: { id: "3" } },
+    ],
+    /**
+     * 대체, 대비책, 보험. ex) book/4
+     * 옵션 세 개 :
+     * - false : 없는 페이지로 취급하도록 설정
+     * -
+     */
+    fallback: false,
+  };
+};
+
+export const getStaticProps = async (context: GetStaticPropsContext) => {
   // 여기서 !로 단언할 수 있는 이유? 무조건 아이디가 하나 있어야만 접근할 수 있는 페이지
   const id = context.params!.id;
   const book = await fetchOneBook(Number(id));
@@ -16,7 +37,7 @@ export const getServerSideProps = async (
 
 export default function Page({
   book,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   if (!book) return "문제가 발생했습니다 다시 시도하세요";
   const { title, subTitle, description, author, publisher, coverImgUrl } = book;
 
