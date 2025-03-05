@@ -2,12 +2,6 @@ import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import style from "./[id].module.css";
 import fetchOneBook from "@/lib/fetch-one-books";
 
-/**
- *
- *
- *
- */
-
 export const getStaticPaths = () => {
   return {
     paths: [
@@ -18,10 +12,11 @@ export const getStaticPaths = () => {
     /**
      * 대체, 대비책, 보험. ex) book/4
      * 옵션 세 개 :
-     * - false : 없는 페이지로 취급하도록 설정
-     * -
+     * - false : 없는 페이지로 취급하도록 설정 404 Not Found 반환
+     * - blocking: 즉시 생성 (Like SSR). 이후 보관 (SSR 과 같은 문제 발생할 수도 있음)
+     * - true: 즉시 생성 + 페이지만 미리 반환 (Props 없는 페이지 빠르게 반환 = getStaticProps로부터 받은 데이터가 없는 페이지. props만 따로 반환)
      */
-    fallback: false,
+    fallback: "blocking",
   };
 };
 
