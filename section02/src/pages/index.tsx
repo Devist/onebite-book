@@ -9,7 +9,9 @@ export const getStaticProps = async () => {
   // const allBooks = await fetchBooks();
   // const recoBooks = await fetchRandomBooks();
 
+  // SSG 방식일 때, 빌드하여 프로덕션 모드로 확인해야 함
   console.log("인덱스 페이지");
+
   const [allBooks, recoBooks] = await Promise.all([
     fetchBooks(),
     fetchRandomBooks(),
@@ -20,6 +22,7 @@ export const getStaticProps = async () => {
       allBooks,
       recoBooks,
     },
+    revalidate: 3, // 재검증. 몇초가 적정할까?
   };
 };
 
