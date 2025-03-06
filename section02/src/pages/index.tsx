@@ -4,14 +4,9 @@ import BookItem from "@/components/book-item";
 import { InferGetStaticPropsType } from "next";
 import fetchBooks from "@/lib/fetch-books";
 import fetchRandomBooks from "@/lib/fetch-random-books";
+import Head from "next/head";
 
 export const getStaticProps = async () => {
-  // const allBooks = await fetchBooks();
-  // const recoBooks = await fetchRandomBooks();
-
-  // SSG 방식일 때, 빌드하여 프로덕션 모드로 확인해야 함
-  console.log("인덱스 페이지");
-
   const [allBooks, recoBooks] = await Promise.all([
     fetchBooks(),
     fetchRandomBooks(),
@@ -31,20 +26,32 @@ export default function Home({
   recoBooks,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
-    <div className={style.container}>
-      <section>
-        <h3>지금 추천하는 도서</h3>
-        {recoBooks.map((book) => (
-          <BookItem key={book.id} {...book} />
-        ))}
-      </section>
-      <section>
-        <h3>등록된 모든 도서</h3>
-        {allBooks.map((book) => (
-          <BookItem key={book.id} {...book} />
-        ))}
-      </section>
-    </div>
+    <>
+      <Head>
+        <title>한입북스</title>
+        {/* '/' 는 public 폴더 경로를 의미 */}
+        <meta property="og:image" content="/thumbnail.png" />
+        <meta property="og:title" content="한입북스" />
+        <meta
+          property="og:description"
+          content="한입 북스에 등록된 도서들을 만나보세요"
+        />
+      </Head>
+      <div className={style.container}>
+        <section>
+          <h3>지금 추천하는 도서</h3>
+          {recoBooks.map((book) => (
+            <BookItem key={book.id} {...book} />
+          ))}
+        </section>
+        <section>
+          <h3>등록된 모든 도서</h3>
+          {allBooks.map((book) => (
+            <BookItem key={book.id} {...book} />
+          ))}
+        </section>
+      </div>
+    </>
   );
 }
 
