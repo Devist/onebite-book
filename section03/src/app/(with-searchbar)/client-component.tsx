@@ -2,7 +2,11 @@
 
 import ServerComponent from "./server-component";
 
-export default function ClientComponent() {
+export default function ClientComponent({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   console.log("클라이언트 컴포넌트");
-  return <ServerComponent />;
+  return <div>{children}</div>;
 }
