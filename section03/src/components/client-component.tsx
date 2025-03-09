@@ -1,6 +1,6 @@
 "use client";
 
-import ServerComponent from "./server-component";
+import ServerComponent from "../app/(with-searchbar)/server-component";
 
 export default function ClientComponent({
   children,
