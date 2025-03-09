@@ -5,7 +5,7 @@
 import { useEffect } from "react";
 import styles from "./page.module.css";
 import ClientComponent from "../../components/client-component";
-import ServerComponent from "./server-component";
+import ServerComponent from "../../components/server-component";
 
 export default function Home() {
   console.log("HOME 컴포넌트 실행");

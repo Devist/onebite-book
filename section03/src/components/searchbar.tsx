@@ -3,17 +3,27 @@
 
 import { useState } from "react";
 
+/**
+ * 앱라우터에서는 useRouter를 next/navigation으로부터 불러와 줘야 함
+ */
+import { useRouter } from "next/navigation";
+
 export default function Searchbar() {
+  const router = useRouter();
   const [search, setSearch] = useState("");
 
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
+  const onSubmit = () => {
+    router.push(`/search?q=${search}`);
+  };
+
   return (
     <div>
       <input value={search} onChange={onChangeSearch} />
-      <button>검색</button>
+      <button onClick={onSubmit}>검색</button>
     </div>
   );
 }
