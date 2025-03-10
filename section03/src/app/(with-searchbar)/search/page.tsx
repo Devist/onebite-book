@@ -1,18 +1,18 @@
-import ClientComponent from "@/components/client-component";
+import books from "@/mock/books.json";
+import BookItem from "@/components/book-item";
 
-// async 붙일 수 있는 이유? 서버 컴포넌트이기 때문에
-export default async function Page({
+export default function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ q: string }>;
+  searchParams: Promise<{
+    q?: string;
+  }>;
 }) {
-  const { q } = await searchParams;
   return (
-    <>
-      <div>Search 페이지 : {q}</div>
-      <ClientComponent>
-        <></>
-      </ClientComponent>
-    </>
+    <div>
+      {books.map((book) => (
+        <BookItem key={book.id} {...book} />
+      ))}
+    </div>
   );
 }

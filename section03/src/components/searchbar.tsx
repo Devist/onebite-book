@@ -1,28 +1,38 @@
 "use client";
-// 페이지 라우터와 달리, 이러한 일반 컴포넌트들도 app 폴더 내에 만들 수 있다. (co-location)
 
-import { useState } from "react";
-
-/**
- * 앱라우터에서는 useRouter를 next/navigation으로부터 불러와 줘야 함
- */
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import style from "./serachbar.module.css";
 
 export default function Searchbar() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [search, setSearch] = useState("");
+
+  const q = searchParams.get("q");
+
+  useEffect(() => {
+    setSearch(q || "");
+  }, [q]);
 
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
   const onSubmit = () => {
+    if (!search || q === search) return;
     router.push(`/search?q=${search}`);
   };
 
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onSubmit();
+    }
+  };
+
   return (
-    <div>
-      <input value={search} onChange={onChangeSearch} />
+    <div className={style.container}>
+      <input value={search} onChange={onChangeSearch} onKeyDown={onKeyDown} />
       <button onClick={onSubmit}>검색</button>
     </div>
   );
