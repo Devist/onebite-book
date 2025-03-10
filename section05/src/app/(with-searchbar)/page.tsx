@@ -3,13 +3,6 @@ import style from "./page.module.css";
 import books from "@/mock/books.json";
 import { BookData } from "@/types";
 
-export const dynamic = "force-dynamic";
-// 특정 페이지의 유형을 강제로 Static 또는 Dynamic 페이지로 설정
-// 1. auto : 기본값, 아무것도 강제하지 않음 - 지금껏 그래왔던것처럼 동적함수와 데이터 캐시 여부에 따라 static 또는 dynamic 페이지로 설정
-// 2. force-dynamic : 페이지를 강제로 다이내믹 페이지로 설정
-// 3. force-static : 페이지를 강제로 Static 페이지로 설정
-// 4. error : 페이지를 강제로 Static 페이지로 설정 (동적함수라던가, 캐싱되지 않은 데이터 패칭 등 스태틱으로 설정하면 안되는 이유가 있다면 빌드 오류가 발생하도록 함)
-
 async function AllBooks() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`,
