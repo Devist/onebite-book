@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
-import { createReviewAction } from "@/actions/create-review.action";
+import { ReviewData } from "@/types";
+import ReviewItem from "@/components/review-item";
+import ReviewEditor from "@/components/review-editor";
 
 // id 1,2,3 아닌 경우에는 404로 가게됨. 동적으로 더이상 받을 파라미터가 존재하지 않아야된다 라고 설정하는것
 // export const dynamicParams = false;
@@ -51,16 +53,22 @@ async function BookDetail({ bookId }: { bookId: string }) {
   );
 }
 
-function ReviewEditor({ bookId }: { bookId: string }) {
+async function ReviewList({ bookId }: { bookId: string }) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/book/${bookId}`
+  );
+
+  if (!response.ok) {
+    throw new Error(`리뷰를 불러오지 못했습니다 : ${response.statusText}`);
+  }
+
+  const reviews: ReviewData[] = await response.json();
+
   return (
     <section>
-      <form action={createReviewAction}>
-        <input name="bookId" value={bookId} hidden readOnly />
-        {/* 클라이언트 측 에러 방지 */}
-        <input required name="content" placeholder="리뷰 내용" />
-        <input required name="author" placeholder="작성자" />
-        <button type="submit">작성하기</button>
-      </form>
+      {reviews.map((review) => (
+        <ReviewItem key={review.id} {...review} />
+      ))}
     </section>
   );
 }
@@ -79,6 +87,7 @@ export default async function Page({
     <div className={style.container}>
       <BookDetail bookId={id} />
       <ReviewEditor bookId={id} />
+      <ReviewList bookId={id} />
     </div>
   );
 }
