@@ -50,7 +50,8 @@ async function BookDetail({ bookId }: { bookId: string }) {
   );
 }
 
-function ReviewEditor() {
+function ReviewEditor({ bookId }: { bookId: string }) {
+  // 서버 액션을 사용하기 위해서는 반드시 async로 만들어야 함
   async function createReviewAction(formData: FormData) {
     "use server";
     // 서버에서만 실행되는 코드
@@ -60,12 +61,32 @@ function ReviewEditor() {
     // console.log(formData);
     const content = formData.get("content")?.toString();
     const author = formData.get("author")?.toString();
+
+    // 서버 측 에러 방지
+    if (!content || !author) {
+      throw new Error("리뷰 내용을 입력해주세요");
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review`,
+        {
+          method: "POST",
+          body: JSON.stringify({ bookId, content, author }),
+        }
+      );
+      console.log(response.status);
+    } catch (err) {
+      console.log(err);
+      return;
+    }
   }
   return (
     <section>
       <form action={createReviewAction}>
-        <input name="content" placeholder="리뷰 내용" />
-        <input name="author" placeholder="작성자" />
+        {/* 클라이언트 측 에러 방지 */}
+        <input required name="content" placeholder="리뷰 내용" />
+        <input required name="author" placeholder="작성자" />
         <button type="submit">작성하기</button>
       </form>
     </section>
@@ -85,7 +106,7 @@ export default async function Page({
   return (
     <div className={style.container}>
       <BookDetail bookId={id} />
-      <ReviewEditor />
+      <ReviewEditor bookId={id} />
     </div>
   );
 }
