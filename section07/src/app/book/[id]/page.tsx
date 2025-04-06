@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
+import { createReviewAction } from "@/actions/create-review.action";
 
 // id 1,2,3 아닌 경우에는 404로 가게됨. 동적으로 더이상 받을 파라미터가 존재하지 않아야된다 라고 설정하는것
 // export const dynamicParams = false;
@@ -51,39 +52,10 @@ async function BookDetail({ bookId }: { bookId: string }) {
 }
 
 function ReviewEditor({ bookId }: { bookId: string }) {
-  // 서버 액션을 사용하기 위해서는 반드시 async로 만들어야 함
-  async function createReviewAction(formData: FormData) {
-    "use server";
-    // 서버에서만 실행되는 코드
-    // 서버에서만 실행되는 액션을 만들고 싶다면, 액션을 함수로 만들어서 사용하면 됨
-    // 이 액션은 서버에서만 실행됨
-    // console.log("server action called");
-    // console.log(formData);
-    const content = formData.get("content")?.toString();
-    const author = formData.get("author")?.toString();
-
-    // 서버 측 에러 방지
-    if (!content || !author) {
-      throw new Error("리뷰 내용을 입력해주세요");
-    }
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review`,
-        {
-          method: "POST",
-          body: JSON.stringify({ bookId, content, author }),
-        }
-      );
-      console.log(response.status);
-    } catch (err) {
-      console.log(err);
-      return;
-    }
-  }
   return (
     <section>
       <form action={createReviewAction}>
+        <input name="bookId" value={bookId} hidden readOnly />
         {/* 클라이언트 측 에러 방지 */}
         <input required name="content" placeholder="리뷰 내용" />
         <input required name="author" placeholder="작성자" />
