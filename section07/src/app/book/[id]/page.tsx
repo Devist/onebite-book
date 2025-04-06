@@ -16,18 +16,9 @@ export function generateStaticParams() {
   return [{ id: "1" }, { id: "2" }, { id: "3" }];
 }
 
-/**
- * book/4는 실시간으로 다이나믹 페이지로 만들어짐 풀 라우트 캐시로 만들어짐
- */
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string | string[] }>;
-}) {
-  const { id } = await params;
-
+async function BookDetail({ bookId }: { bookId: string }) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${id}`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${bookId}`
   );
 
   if (!response.ok) {
@@ -42,7 +33,7 @@ export default async function Page({
   const { title, subTitle, description, author, publisher, coverImgUrl } = book;
 
   return (
-    <div className={style.container}>
+    <section>
       <div
         className={style.cover_img_container}
         style={{ backgroundImage: `url('${coverImgUrl}')` }}
@@ -55,6 +46,46 @@ export default async function Page({
         {author} | {publisher}
       </div>
       <div className={style.description}>{description}</div>
+    </section>
+  );
+}
+
+function ReviewEditor() {
+  async function createReviewAction(formData: FormData) {
+    "use server";
+    // 서버에서만 실행되는 코드
+    // 서버에서만 실행되는 액션을 만들고 싶다면, 액션을 함수로 만들어서 사용하면 됨
+    // 이 액션은 서버에서만 실행됨
+    // console.log("server action called");
+    // console.log(formData);
+    const content = formData.get("content")?.toString();
+    const author = formData.get("author")?.toString();
+  }
+  return (
+    <section>
+      <form action={createReviewAction}>
+        <input name="content" placeholder="리뷰 내용" />
+        <input name="author" placeholder="작성자" />
+        <button type="submit">작성하기</button>
+      </form>
+    </section>
+  );
+}
+
+/**
+ * book/4는 실시간으로 다이나믹 페이지로 만들어짐 풀 라우트 캐시로 만들어짐
+ */
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  return (
+    <div className={style.container}>
+      <BookDetail bookId={id} />
+      <ReviewEditor />
     </div>
   );
 }

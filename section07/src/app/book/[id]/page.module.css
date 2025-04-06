@@ -4,6 +4,12 @@
   gap: 10px;
 }
 
+.container > section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .cover_img_container {
   display: flex;
   justify-content: center;
